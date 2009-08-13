@@ -73,3 +73,16 @@
                   "1+ non-nil"  (f [10 nil])
                   "nil"         (f [nil]))))
 )
+
+(deftest testnp
+  (defnp np-signum
+    (0 0)
+    (n :when (< n 0) -1)
+    (_ 1))
+
+  (testing "Testing defnp"
+           (are (= _1 _2)
+                -1     (np-signum -10)
+                0      (np-signum 0)
+                1      (np-signum 10)))
+) 

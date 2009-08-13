@@ -98,3 +98,9 @@
   [v & body]
   (build-match v body))
 
+(defmacro defnp
+  "This defines a function taking a single value that goes through an
+  implicit case statement.  For example: (defnp signum (0
+  0) (n :when (< n 0) -1) (_ 1))"
+  [fn-name & patterns]
+  `(defn ~fn-name [x#] (match x# ~@patterns)))

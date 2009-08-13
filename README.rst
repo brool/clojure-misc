@@ -4,9 +4,9 @@ Miscellaneous Clojure Routines
 Pattern Matching
 ----------------
 
-Literal values match against the same value, while _ matches
-against any non-nil value.  Additionally, :when clauses can be used
-for conditional checks::
+Literal values match against the same value, while _ matches against
+any non-nil value.  The action is an implicit do.  Additionally, :when
+clauses can be used for conditional checks::
 
     ; simple recursive evaluator
     (defn arithmetic [lst]
@@ -14,6 +14,7 @@ for conditional checks::
         ( v  :when (number? v)  v)
         ( [ _ "error" _]     "error" )
         ( [ _ _ "error"]     "error" )
+        ( [ "print" a ]      (println "Output:" a) a)
         ( [ "add" a b ]      (+ (arithmetic a) (arithmetic b)))
         ( [ "sub" a b ]      (- (arithmetic a) (arithmetic b)))
         ( [ "mul" a b ]      (* (arithmetic a) (arithmetic b)))
@@ -39,7 +40,7 @@ The pattern matching is stricter than the typical destructure;  whereas [ a b ] 
         ( [_]   "one element" )
         ( [a a] "two identical elements" )
         ( [_ _] "two elements" )
-        ( _     "two or more"))
+        ( _     "three or more"))
 
 If the same variable occurs in multiple locations in the parameter
 list, it will be checked for equality::
@@ -53,6 +54,25 @@ list, it will be checked for equality::
           ( _                    count))))
 
 Note that this is slightly more flexible than Haskell / ML, in that a variable of the same name can be multiple places in the pattern.
+
+Defining
+--------
+
+You can use the defnp macro to define a function that is pattern
+matched; it defines a function that takes one argument and has an
+implicit match statement.  For example, the signum function can be
+written:
+         
+::
+        
+    (defnp signum
+       (0 0)
+       (n :when (< n 0) -1)
+       (_ 1))
+
+(Thanks to `Tom Faulhaber`_ for suggesting this)
+
+.. _Tom Faulhaber: http://infolace.blogspot.com/
 
 Gotchas
 -------
@@ -79,5 +99,4 @@ turns into essentially the following::
          (if (and (not (nil? a)) (= g0001 a) (nil? g0002)) "two identical" nil))
 
 That is, the destructuring is done, but then the two variables are checked to make sure that they are equal, and the list is checked to make sure it is only two elements long.
-
 
