@@ -5,8 +5,8 @@ Pattern Matching
 ----------------
 
 Literal values match against the same value, while _ matches against
-any non-nil value.  The action is an implicit do.  Additionally, :when
-clauses can be used for conditional checks::
+any non-nil value.  Additionally, :when clauses can be used for
+conditional checks::
 
     ; simple recursive evaluator
     (defn arithmetic [lst]
@@ -14,7 +14,7 @@ clauses can be used for conditional checks::
         v  :when (number? v)  v
         [ _ "error" _]     "error"
         [ _ _ "error"]     "error"
-        [ "print" a ]      (println "Output:" a) a
+        [ "print" a ]      (do (println "Output:" a) a)
         [ "add" a b ]      (+ (arithmetic a) (arithmetic b))
         [ "sub" a b ]      (- (arithmetic a) (arithmetic b))
         [ "mul" a b ]      (* (arithmetic a) (arithmetic b))
