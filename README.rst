@@ -11,36 +11,36 @@ clauses can be used for conditional checks::
     ; simple recursive evaluator
     (defn arithmetic [lst]
       (match lst
-        ( v  :when (number? v)  v)
-        ( [ _ "error" _]     "error" )
-        ( [ _ _ "error"]     "error" )
-        ( [ "print" a ]      (println "Output:" a) a)
-        ( [ "add" a b ]      (+ (arithmetic a) (arithmetic b)))
-        ( [ "sub" a b ]      (- (arithmetic a) (arithmetic b)))
-        ( [ "mul" a b ]      (* (arithmetic a) (arithmetic b)))
-        ( [ "div" a b ]      (/ (arithmetic a) (arithmetic b)))
-        ( [ "squared" a ]    (arithmetic ["mul" (arithmetic a) (arithmetic a)]))
-        ( _                  "error" )))
+        v  :when (number? v)  v
+        [ _ "error" _]     "error"
+        [ _ _ "error"]     "error"
+        [ "print" a ]      (println "Output:" a) a
+        [ "add" a b ]      (+ (arithmetic a) (arithmetic b))
+        [ "sub" a b ]      (- (arithmetic a) (arithmetic b))
+        [ "mul" a b ]      (* (arithmetic a) (arithmetic b))
+        [ "div" a b ]      (/ (arithmetic a) (arithmetic b))
+        [ "squared" a ]    (arithmetic ["mul" (arithmetic a) (arithmetic a)])
+        _                  "error" ))
 
 Both collections and single values can be used::
 
     ;; return "zero" "positive" or "negative" for a number
     (defn signum [x]
       (match x 
-        (0 0)
-        (n :when (< n 0) -1)
-        (_ 1)))
+        0 0
+        n :when (< n 0) -1
+        _ 1))
 
 The pattern matching is stricter than the typical destructure;  whereas [ a b ] will destructure against a list of any number of elements, [ a b ] will pattern match only against a list of two elements.
 
 ::
 
     (match x 
-        ( []    "empty" )
-        ( [_]   "one element" )
-        ( [a a] "two identical elements" )
-        ( [_ _] "two elements" )
-        ( _     "three or more"))
+        []    "empty"
+        [_]   "one element"
+        [a a] "two identical elements"
+        [_ _] "two elements"
+        _     "three or more")
 
 If the same variable occurs in multiple locations in the parameter
 list, it will be checked for equality::
@@ -49,9 +49,9 @@ list, it will be checked for equality::
     (defn count= [ lst1 lst2 ]
       (loop [ a lst1 b lst2 count 0 ]
         (match [a b]
-          ( [[e & at] [e & bt]]  (recur at bt (inc count)) )
-          ( [[_ & at] [_ & bt]]  (recur at bt count) )
-          ( _                    count))))
+          [[e & at] [e & bt]]  (recur at bt (inc count))
+          [[_ & at] [_ & bt]]  (recur at bt count)
+          _                    count)))
 
 Note that this is slightly more flexible than Haskell / ML, in that a variable of the same name can be multiple places in the pattern.
 
@@ -66,9 +66,9 @@ written:
 ::
         
     (defnp signum
-       (0 0)
-       (n :when (< n 0) -1)
-       (_ 1))
+       0 0
+       n :when (< n 0) -1
+       _ 1)
 
 (Thanks to `Tom Faulhaber`_ for suggesting this)
 
@@ -91,7 +91,7 @@ How It Works
 
 The pattern matcher uses the built-in Clojure destructuring as the main mechanism, but adorns it so that the pattern can be verified.  For example, the code::
 
-    (match x ( [a a] "two identical" ))
+    (match x [a a] "two identical")
 
 turns into essentially the following::
 
