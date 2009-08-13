@@ -74,14 +74,14 @@
             params (nth condition 0)
             [nf ctx] (build-match* params {})
             has-when (= (nth condition 1) :when)]
-        (let [action (nth condition (if has-when 3 1))
+        (let [action (drop (if has-when 3 1) condition)
               when-check (if has-when (list (nth condition 2)))
               not-nil (map (fn [v] `(not (nil? ~v))) (ctx :not-nil))
               is-nil (map (fn [v] `(nil? ~v)) (ctx :is-nil))
               equal-checks (ctx :equal-checks)]
           `(let ~(vector nf v) 
              (if (and ~@not-nil ~@is-nil ~@equal-checks ~@when-check)
-               ~action
+               ~@action
                ~(build-match v (rest body))))
           ))))
 
