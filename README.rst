@@ -1,6 +1,15 @@
 Miscellaneous Clojure Routines
 ==============================
 
+Notes
+-----
+
+This has been placed as a `module on Clojars`_.  To use it, you'll add a reference to:
+
+    [pattern-match "1.0.0"]
+
+.. _module on Clojars: http://clojars.org/pattern-match
+
 Pattern Matching
 ----------------
 
