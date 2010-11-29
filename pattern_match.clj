@@ -50,6 +50,7 @@
     :or { bindings #{} equal-checks #{} not-nil #{} is-nil #{} } }]
   (let [g (gensym)]
   (cond
+   (and (coll? k) (= 'quote (first k))) [g (assoc context :equal-checks (conj equal-checks `(= ~g ~k)))]
    (coll? k) (let [has-body (some #(= % '&) k)
                    k* (if (not has-body) (conj k '& 'nil) k)
                    [nf ctx] (map-passing-context build-match* context k*)]
@@ -61,7 +62,7 @@
    (= k '_) [g (assoc context :not-nil (conj not-nil g))]
    (= k 'nil) [g (assoc context :is-nil (conj is-nil g))]
    (= k '&) ['& context]
-   (or (string? k) (number? k)) [g (assoc context :equal-checks (conj equal-checks `(= ~g ~k)))]
+   (or (string? k) (number? k) (keyword? k)) [g (assoc context :equal-checks (conj equal-checks `(= ~g ~k)))]
    (symbol? k) (if (bindings k)
                  [g (assoc context :equal-checks (conj equal-checks `(= ~g ~k)))]
                  [k (assoc context :not-nil (conj not-nil k) :bindings (conj bindings k))])

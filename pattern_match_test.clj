@@ -16,6 +16,17 @@
               ">10" (f 20))
 )))
 
+(deftest symbol-and-keyword-values 
+  (testing "Single value patterns"
+    (let [f (fn [x] (match x 'a "a" 'b "b" :c ":c" :d ":d" _ "other"))]
+             (are (= _1 _2) 
+              "a" (f 'a)
+              "b" (f 'b)
+              ":c" (f :c)
+              ":d" (f :d)
+              "other" (f 1))
+)))
+
 (deftest basic-list-matching
   (testing "Basic list matching + fallthrough should go to nil"
            (let [f (fn [x] (match x [] "empty" [_] "one" [_ _] "two"))]
@@ -51,6 +62,8 @@
              (are (= _1 _2)
                   "false" (f [[1 2] [1 3]])
                   "false" (f [[1] [1 3]])
+                  "false" (f [[1 'a] [1 'b]])
+                  "true"  (f [[1 'a] [1 'a]])
                   "true"  (f [[1 2] [1 2]])
                   "true"  (f [[0 2] [1 2]])
                   "true"  (f [[0 2 3] [9 2 3]])
