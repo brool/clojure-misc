@@ -1,7 +1,7 @@
 ;;
 ;; Pattern matching similar to ML / Haskell.
 ;;
-;; Copyright (c) 2009 by Tim Lopez. Licensed under Eclipse Public License 1.0.
+;; Copyright (c) 2009-2011 by Tim Lopez. Licensed under Eclipse Public License 1.0.
 ;;
 ;; Some examples:
 ;;
@@ -44,6 +44,8 @@
 ;;      ... with checks to make sure g1 is nil and g2 == a
 ;;
 
+(defmacro literal [x] `~x)
+
 (defn- build-match*
   [k 
    { :keys [form bindings equal-checks not-nil is-nil] :as context 
@@ -51,6 +53,7 @@
   (let [g (gensym)]
   (cond
    (and (coll? k) (= 'quote (first k))) [g (assoc context :equal-checks (conj equal-checks `(= ~g ~k)))]
+   (and (coll? k) (= 'literal (first k))) [g (assoc context :equal-checks (conj equal-checks `(= ~g ~(nth k 1))))]
    (coll? k) (let [has-body (some #(= % '&) k)
                    k* (if (not has-body) (conj k '& 'nil) k)
                    [nf ctx] (map-passing-context build-match* context k*)]

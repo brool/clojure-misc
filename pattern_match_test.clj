@@ -57,6 +57,13 @@
                   "greater than" (f [2 1])
                   "equal"     (f [1 1]))))
 
+  (testing "More symbol checks"
+    (let [f (fn [x] (match x [(literal +) 4 5] "plus" [(literal *) 4 5] "times" _ "otherwise"))]
+      (are (= _1 _2)
+           "plus"  (f [+ 4 5])
+           "times" (f [* 4 5])
+           "otherwise" (f [- 4 5]))))
+
   (testing "Matching & body forms should work as well"
            (let [f (fn [x] (match x [[_ & rest] [_ & rest]] "true" _ "false"))]
              (are (= _1 _2)

@@ -64,6 +64,18 @@ list, it will be checked for equality::
 
 Note that this is slightly more flexible than Haskell / ML, in that a variable of the same name can be multiple places in the pattern.
 
+The pattern-match/literal special operator allows you to specify that a symbol should not be treated as a pattern match variable, but instead is already bound and should be used as-is.  Contrast::
+
+    ;; returns "plus" -- the "+" in the first pattern match is treated as a variable
+    (match [* 4 5] [+ _ _] "plus" [* _ _] "times" _ "unknown")
+
+versus::
+
+    ;; returns "times", as expected
+    (match [* 4 5] [(literal +) _ _] "plus" [(literal *) _ _] "times" _ "unknown")
+
+I'm not totally sold on the way I've handled it here, if anyone has better ideas let me know.
+
 Defining
 --------
 
