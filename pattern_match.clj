@@ -32,8 +32,21 @@
 (ns
     #^{:author "Tim Lopez"
        :doc "Pattern matching per Haskell/ML"}
-  pattern-match
-  (:use [clojure.contrib.pprint.utilities :only (map-passing-context)]))
+  pattern-match)
+
+;; map-passing-context
+;; originally from clojure.contrib.pprint.utilities
+
+(defn- map-passing-context [func initial-context lis]
+  (loop [context initial-context
+         lis lis
+         acc []]
+    (if (empty? lis)
+      [acc context]
+    (let [this (first lis)
+          remainder (next lis)
+          [result new-context] (apply func [this context])]
+      (recur new-context remainder (conj acc result))))))
 
 ;; build-match*, given an lvalue for a destructured bind, build an
 ;; equivalent lvalue with a set of checks such that the match can be
